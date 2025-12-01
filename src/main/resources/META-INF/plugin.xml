@@ -17,7 +17,7 @@
     <actions>
         <action id="com.github.lux44.zstdcompressiontakehome.CompressOpenFileAction"
                 class="actions.CompressOpenFileAction"
-                text="Compress File"
+                text="Compress Current File"
                 description="Compress currently open file with zstd">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
