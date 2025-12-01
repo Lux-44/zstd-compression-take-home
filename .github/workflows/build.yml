@@ -28,12 +28,16 @@ jobs:
 
   # Prepare the environment and build the plugin
   build:
-    name: Build
-    runs-on: ubuntu-latest
+    name: Build on ${{matrix.os}}
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     steps:
 
       # Free GitHub Actions Environment Disk Space
       - name: Maximize Build Space
+        if: runner.os == 'Linux'
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
           tool-cache: false
@@ -63,28 +67,32 @@ jobs:
         id: artifact
         shell: bash
         run: |
-          cd ${{ github.workspace }}/build/distributions
-          FILENAME=`ls *.zip`
-          unzip "$FILENAME" -d content
+          DIST="$GITHUB_WORKSPACE/build/distributions"
+          FILENAME=$(ls "$DIST"/*.zip | head -n 1)
+          unzip "$FILENAME" -d "$DIST/content"
+          BASENAME=$(basename "$FILENAME" .zip)
 
-          echo "filename=${FILENAME:0:-4}" >> $GITHUB_OUTPUT
+          echo "filename=$BASENAME" >> "$GITHUB_OUTPUT"
 
       # Store an already-built plugin as an artifact for downloading
       - name: Upload artifact
         uses: actions/upload-artifact@v5
         with:
-          name: ${{ steps.artifact.outputs.filename }}
+          name: ${{ steps.artifact.outputs.filename }}-${{matrix.os}}
           path: ./build/distributions/content/*/*
 
   # Run tests and upload a code coverage report
   test:
-    name: Test
-    needs: [ build ]
-    runs-on: ubuntu-latest
+    name: Test on ${{matrix.os}}
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
     steps:
 
       # Free GitHub Actions Environment Disk Space
       - name: Maximize Build Space
+        if: runner.os == 'Linux'
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
           tool-cache: false
@@ -116,7 +124,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v5
         with:
-          name: tests-result
+          name: tests-result-${{matrix.os}}
           path: ${{ github.workspace }}/build/reports/tests
 
       # Upload the Kover report to CodeCov
@@ -128,9 +136,12 @@ jobs:
 
   # Run Qodana inspections and provide a report
   inspectCode:
-    name: Inspect code
+    name: Inspect code on ${{matrix.os}}
     needs: [ build ]
-    runs-on: ubuntu-latest
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
     permissions:
       contents: write
       checks: write
@@ -139,6 +150,7 @@ jobs:
 
       # Free GitHub Actions Environment Disk Space
       - name: Maximize Build Space
+        if: runner.os == 'Linux'
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
           tool-cache: false
@@ -160,19 +172,24 @@ jobs:
 
       # Run Qodana inspections
       - name: Qodana - Code Inspection
+        if: runner.os == 'Linux'
         uses: JetBrains/qodana-action@v2025.1.1
         with:
           cache-default-branch-only: true
 
   # Run plugin structure verification along with IntelliJ Plugin Verifier
   verify:
-    name: Verify plugin
+    name: Verify plugin on ${{matrix.os}}
     needs: [ build ]
-    runs-on: ubuntu-latest
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
     steps:
 
       # Free GitHub Actions Environment Disk Space
       - name: Maximize Build Space
+        if: runner.os == 'Linux'
         uses: jlumbroso/free-disk-space@v1.3.1
         with:
           tool-cache: false
@@ -204,7 +221,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v5
         with:
-          name: pluginVerifier-result
+          name: pluginVerifier-result-${{matrix.os}}
           path: ${{ github.workspace }}/build/reports/pluginVerifier
 
   # Prepare a draft release for GitHub Releases page for the manual verification

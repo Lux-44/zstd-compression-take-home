@@ -7,9 +7,17 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.PsiErrorElementUtil
 import com.github.lux44.zstdcompressiontakehome.services.MyProjectService
+import com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess
+import java.nio.file.Path
 
 @TestDataPath("\$CONTENT_ROOT/src/test/testData")
 class MyPluginTest : BasePlatformTestCase() {
+
+    override fun setUp() {
+        super.setUp()
+        val path = Path.of(testDataPath).toAbsolutePath().toString()
+        VfsRootAccess.allowRootAccess(testRootDisposable,path)
+    }
 
     fun testXMLFile() {
         val psiFile = myFixture.configureByText(XmlFileType.INSTANCE, "<foo>bar</foo>")
