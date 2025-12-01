@@ -8,8 +8,20 @@
 
     <resource-bundle>messages.MyBundle</resource-bundle>
 
+
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.lux44.zstdcompressiontakehome.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
         <postStartupActivity implementation="com.github.lux44.zstdcompressiontakehome.startup.MyProjectActivity" />
     </extensions>
+
+    <actions>
+        <action id="com.github.lux44.zstdcompressiontakehome.CompressOpenFileAction"
+                class="actions.CompressOpenFileAction"
+                text="Compress File"
+                description="Compress currently open file with zstd">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+    </actions>
+
+
 </idea-plugin>
