@@ -1,8 +1,12 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.github.lux44.zstdcompressiontakehome</id>
-    <name>zstd-compression-take-home</name>
+    <name>Zstd File Compression</name>
     <vendor>lux-44</vendor>
+
+    <description><![CDATA[
+        Compress the currently open file using the Zstd algorithm with support for Windows and Linux.
+    ]]></description>
 
     <depends>com.intellij.modules.platform</depends>
 
