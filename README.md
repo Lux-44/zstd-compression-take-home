@@ -1,12 +1,7 @@
 # Zstd File Compression
 
-![Build](https://github.com/Lux-44/zstd-compression-take-home/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/MARKETPLACE_ID.svg)](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/MARKETPLACE_ID.svg)](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID)
-
-
 <!-- Plugin description -->
-Compress the currently open file using the Zstd algorithm with support for Windows and Linux.
+Dynamic plugin to compress the currently open file using the [Zstd algorithm](https://github.com/luben/zstd-jni) with support for Windows and Linux.
 <!-- Plugin description end -->
 
 ## Installation

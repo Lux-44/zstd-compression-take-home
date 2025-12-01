@@ -2,7 +2,7 @@
 <idea-plugin>
     <id>com.github.lux44.zstdcompressiontakehome</id>
     <name>Zstd File Compression</name>
-    <vendor>lux-44</vendor>
+    <vendor>Felix Poschenrieder</vendor>
 
     <description><![CDATA[
         Compress the currently open file using the Zstd algorithm with support for Windows and Linux.
