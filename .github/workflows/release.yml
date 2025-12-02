@@ -56,6 +56,9 @@ jobs:
 
           ./gradlew patchChangelog --release-note-file=$RELEASE_NOTE
 
+      - name: Build Plugin
+        run: ./gradlew buildPlugin
+
       # Publish the plugin to JetBrains Marketplace
      # - name: Publish Plugin
       #  env:
