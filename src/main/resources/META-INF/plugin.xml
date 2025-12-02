@@ -14,8 +14,9 @@
 
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.lux44.zstdcompressiontakehome.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-        <postStartupActivity implementation="com.github.lux44.zstdcompressiontakehome.startup.MyProjectActivity" />
+        <toolWindow factoryClass="com.github.lux44.zstdcompressiontakehome.toolWindow.MyToolWindowFactory"
+                    id="MyToolWindow"/>
+        <postStartupActivity implementation="com.github.lux44.zstdcompressiontakehome.startup.MyProjectActivity"/>
     </extensions>
 
     <actions>
