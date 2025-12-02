@@ -19,11 +19,10 @@ class CompressOpenFileAction : AnAction() {
         return ActionUpdateThread.BGT
     }
 
-
     override fun update(e: AnActionEvent) {
-        val virtFile=e.getData(CommonDataKeys.VIRTUAL_FILE)
+        val virtFile = e.getData(CommonDataKeys.VIRTUAL_FILE)
         // Only files can be compressed
-        e.presentation.isEnabledAndVisible=virtFile!=null&&!virtFile.isDirectory
+        e.presentation.isEnabledAndVisible = virtFile != null && !virtFile.isDirectory
     }
 
     override fun actionPerformed(event: AnActionEvent) {
@@ -47,7 +46,7 @@ class CompressOpenFileAction : AnAction() {
             }
         } catch (e: Exception) {
             Messages.showMessageDialog(
-                "Could not compress currently open file!: "+e.message,
+                "Could not compress currently open file!: " + e.message,
                 "Compression Error",
                 Messages.getErrorIcon()
             )
