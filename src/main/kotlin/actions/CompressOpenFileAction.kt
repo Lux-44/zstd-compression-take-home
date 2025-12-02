@@ -20,9 +20,9 @@ class CompressOpenFileAction : AnAction() {
     }
 
     override fun update(e: AnActionEvent) {
-        val virtFile = e.getData(CommonDataKeys.VIRTUAL_FILE)
+        val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE)
         // Only files can be compressed
-        e.presentation.isEnabledAndVisible = virtFile != null && !virtFile.isDirectory
+        e.presentation.isEnabledAndVisible = virtualFile != null && !virtualFile.isDirectory
     }
 
     override fun actionPerformed(event: AnActionEvent) {
