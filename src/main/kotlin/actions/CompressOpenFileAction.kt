@@ -28,28 +28,36 @@ class CompressOpenFileAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
         // If no file is currently open, do nothing
         val currentFile = event.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
-        compressFile(currentFile)
-    }
-
-    private fun compressFile(currentFile: VirtualFile) {
+        // Only compress file if it exists in the local file system
+        if (!currentFile.isInLocalFileSystem) {
+            Messages.showMessageDialog(
+                "No physical file to be compressed!",
+                "Compression Error",
+                Messages.getErrorIcon()
+            )
+        }
         try {
-            val file = File(currentFile.path)
-            val fileBytes = file.readBytes()
-            // Compression Level 3 as it is default
-            val compBytes = Zstd.compress(fileBytes, 3)
-            // Write compressed file to same location as input file
-            val compFile = File(file.absolutePath + ".zst")
-            compFile.writeBytes(compBytes)
-            // Refresh to make result visible faster
-            ApplicationManager.getApplication().invokeLater {
-                LocalFileSystem.getInstance().refreshAndFindFileByPath(compFile.absolutePath)
-            }
+            compressFile(currentFile)
         } catch (e: Exception) {
             Messages.showMessageDialog(
                 "Could not compress currently open file!: " + e.message,
                 "Compression Error",
                 Messages.getErrorIcon()
             )
+        }
+    }
+
+    private fun compressFile(currentFile: VirtualFile) {
+        val file = File(currentFile.path)
+        val fileBytes = file.readBytes()
+        // Compression Level 3 as it is default
+        val compBytes = Zstd.compress(fileBytes, 3)
+        // Write compressed file to same location as input file
+        val compFile = File(file.absolutePath + ".zst")
+        compFile.writeBytes(compBytes)
+        // Refresh to make result visible faster
+        ApplicationManager.getApplication().invokeLater {
+            LocalFileSystem.getInstance().refreshAndFindFileByPath(compFile.absolutePath)
         }
     }
 }
