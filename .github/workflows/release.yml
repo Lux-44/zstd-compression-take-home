@@ -81,7 +81,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="${{ github.event.release.tag_name }}"
-          BRANCH="changelog-update-$VERSION"
+          TIMESTAMP=$(date +%s)
+          BRANCH="changelog-update-$VERSION-${TIMESTAMP}"
           LABEL="release changelog"
 
           git config user.email "action@github.com"
