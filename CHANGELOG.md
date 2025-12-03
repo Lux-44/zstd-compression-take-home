@@ -3,5 +3,10 @@
 # zstd-compression-take-home Changelog
 
 ## [Unreleased]
-### Added
-- Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
+
+## [0.0.1] - 2025-12-03
+
+Implements compression of open files, tested for Windows and Linux
+
+[Unreleased]: https://github.com/Lux-44/zstd-compression-take-home/compare/v0.0.1...HEAD
+[0.0.1]: https://github.com/Lux-44/zstd-compression-take-home/commits/v0.0.1
