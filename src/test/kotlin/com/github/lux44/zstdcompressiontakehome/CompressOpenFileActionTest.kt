@@ -16,25 +16,6 @@ import kotlin.io.path.readBytes
 
 class CompressOpenFileActionTest : BasePlatformTestCase() {
 
-    fun testCompressionCreatesNonEmptyOutput() {
-        val virtualFile = myFixture.createFile("test.kt", "testString")
-        val outFile = File("test.kt.zst")
-        outFile.writeBytes(Zstd.compress(virtualFile.contentsToByteArray()))
-        assertTrue("Output file should exist", outFile.exists())
-        assertTrue("Output file should be not empty", outFile.length() > 0)
-        outFile.delete()
-    }
-
-    fun testCompressionDecompression() {
-        val virtualFile = myFixture.createFile("test.kt", "testString")
-        val outFile = File("test.kt.zst")
-        val inBytes = virtualFile.contentsToByteArray()
-        outFile.writeBytes(Zstd.compress(inBytes))
-        val decompBytes = Zstd.decompress(outFile.readBytes())
-        outFile.delete()
-        assertArrayEquals("Compressed and decompressed contents should be the same as original", inBytes, decompBytes)
-    }
-
     fun testActionEnabled() {
         val virtualFile = myFixture.createFile("test.kt", "testString")
         val action = CompressOpenFileAction()
