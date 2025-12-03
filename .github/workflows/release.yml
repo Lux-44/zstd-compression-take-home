@@ -82,7 +82,7 @@ jobs:
         run: |
           VERSION="${{ github.event.release.tag_name }}"
           TIMESTAMP=$(date +%s)
-          BRANCH="changelog-update-$VERSION-${TIMESTAMP}"
+          BRANCH="changelog-update-$VERSION-$TIMESTAMP"
           LABEL="release changelog"
 
           git config user.email "action@github.com"
