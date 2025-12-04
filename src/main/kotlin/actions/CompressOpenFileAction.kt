@@ -74,27 +74,19 @@ class FileCompressionService(private val project: Project, private val coroutine
         }
     }
 
-    // Into extra function for easier testing
+    // Logic in extra function for easier testing
     internal suspend fun compressFileInternal(currentFile: VirtualFile) {
-        val file = withContext(Dispatchers.IO) {
-            File(currentFile.path)
-        }
+        val file = File(currentFile.path)
         val fileBytes = withContext(Dispatchers.IO) {
             file.readBytes()
         }
         // Compression Level 3 as it is default
         val compBytes = Zstd.compress(fileBytes, 3)
         // Write compressed file to same location as input file
-        val compFile = withContext(Dispatchers.IO) {
-            File(file.absolutePath + ".zst")
-        }
+        val compFile = File(file.absolutePath + ".zst")
         withContext(Dispatchers.IO) {
             compFile.writeBytes(compBytes)
         }
-        // Dispatch onto EDT for UI refresh
-        withContext(Dispatchers.EDT) {
-            // Refresh to make result visible faster
-            LocalFileSystem.getInstance().refreshAndFindFileByPath(compFile.absolutePath)
-        }
+        LocalFileSystem.getInstance().refreshIoFiles(listOf(compFile))
     }
 }
