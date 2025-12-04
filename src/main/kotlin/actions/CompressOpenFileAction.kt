@@ -52,31 +52,13 @@ class CompressOpenFileAction : AnAction() {
 
 @Service(Service.Level.PROJECT)
 class FileCompressionService(private val project: Project, private val coroutineScope: CoroutineScope) {
+
     fun compressFile(currentFile: VirtualFile) {
         coroutineScope.launch {
             // Attempt compression
             try {
                 withBackgroundProgress(project, "Compressing open file", cancellable = true) {
-                    val file = withContext(Dispatchers.IO) {
-                       File(currentFile.path)
-                    }
-                    val fileBytes =withContext(Dispatchers.IO) {
-                         file.readBytes()
-                    }
-                    // Compression Level 3 as it is default
-                    val compBytes = Zstd.compress(fileBytes, 3)
-                    // Write compressed file to same location as input file
-                    val compFile =  withContext(Dispatchers.IO) {
-                       File(file.absolutePath + ".zst")
-                    }
-                    withContext(Dispatchers.IO) {
-                        compFile.writeBytes(compBytes)
-                    }
-                    // Dispatch onto EDT for UI refresh
-                    withContext(Dispatchers.EDT){
-                        // Refresh to make result visible faster
-                        LocalFileSystem.getInstance().refreshAndFindFileByPath(compFile.absolutePath)
-                    }
+                    compressFileInternal(currentFile)
                 }
             } catch (e: Exception) {
                 // Dispatch error message onto EDT
@@ -88,6 +70,29 @@ class FileCompressionService(private val project: Project, private val coroutine
                     )
                 }
             }
+        }
+    }
+
+    internal suspend fun compressFileInternal(currentFile:VirtualFile){
+        val file = withContext(Dispatchers.IO) {
+            File(currentFile.path)
+        }
+        val fileBytes =withContext(Dispatchers.IO) {
+            file.readBytes()
+        }
+        // Compression Level 3 as it is default
+        val compBytes = Zstd.compress(fileBytes, 3)
+        // Write compressed file to same location as input file
+        val compFile =  withContext(Dispatchers.IO) {
+            File(file.absolutePath + ".zst")
+        }
+        withContext(Dispatchers.IO) {
+            compFile.writeBytes(compBytes)
+        }
+        // Dispatch onto EDT for UI refresh
+        withContext(Dispatchers.EDT){
+            // Refresh to make result visible faster
+            LocalFileSystem.getInstance().refreshAndFindFileByPath(compFile.absolutePath)
         }
     }
 }

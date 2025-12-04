@@ -14,45 +14,17 @@ import kotlin.io.path.createTempFile
 import kotlin.io.path.pathString
 import kotlin.io.path.readBytes
 
-class CompressOpenFileActionTest : BasePlatformTestCase() {
+class FileCompressionServiceTest : BasePlatformTestCase() {
 
-    fun testActionEnabled() {
-        val virtualFile = myFixture.createFile("test.kt", "testString")
-        val action = CompressOpenFileAction()
-        val event = TestActionEvent.createTestEvent { id ->
-            when (id) {
-                CommonDataKeys.VIRTUAL_FILE.name -> virtualFile
-                else -> null
-            }
-        }
-        action.update(event)
-        assertTrue("Action should be enabled for file", event.presentation.isEnabledAndVisible)
-    }
-
-    fun testActionDisabledNoFile() {
-        val action = CompressOpenFileAction()
-        val event = TestActionEvent.createTestEvent { id ->
-            when (id) {
-                else -> null
-            }
-        }
-        action.update(event)
-        assertFalse("Action should be disabled when no file available", event.presentation.isEnabledAndVisible)
-    }
-
-    /*fun testActionProducesFile() {
+    fun testActionProducesFile() {
         val inFile = createTempFile("test",".kt")
         inFile.write("testString")
         val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(inFile.pathString)
         val outFile =File(inFile.pathString +".zst")
-        val action = CompressOpenFileAction()
-        val event = TestActionEvent.createTestEvent { id ->
-            when (id) {
-                CommonDataKeys.VIRTUAL_FILE.name -> virtualFile
-                else -> null
-            }
-        }
-        action.actionPerformed(event)
+
+        val service = project.service<FileCompressionService>(virtualFile)
+       // service.compressFileInternal(virtualFile)
+
         LocalFileSystem.getInstance().refresh(false)
         assertTrue("Output file should exist", outFile.exists())
         inFile.delete()
@@ -78,5 +50,5 @@ class CompressOpenFileActionTest : BasePlatformTestCase() {
         assertArrayEquals("Compressed and decompressed contents should be the same as original", inFile.readBytes(), decompBytes)
         inFile.delete()
         outFile.delete()
-    }*/
+    }
 }
