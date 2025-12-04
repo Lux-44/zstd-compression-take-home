@@ -30,7 +30,8 @@ class CompressOpenFileAction : AnAction() {
     override fun update(e: AnActionEvent) {
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE)
         // Only files can be compressed
-        e.presentation.isEnabledAndVisible = virtualFile != null && !virtualFile.isDirectory && virtualFile.isInLocalFileSystem
+        e.presentation.isEnabledAndVisible =
+            virtualFile != null && !virtualFile.isDirectory && virtualFile.isInLocalFileSystem
     }
 
     override fun actionPerformed(event: AnActionEvent) {
@@ -62,7 +63,7 @@ class FileCompressionService(private val project: Project, private val coroutine
                 }
             } catch (e: Exception) {
                 // Dispatch error message onto EDT
-                withContext(Dispatchers.EDT){
+                withContext(Dispatchers.EDT) {
                     Messages.showMessageDialog(
                         "Could not compress currently open file!: " + e.message,
                         "Compression Error",
@@ -73,24 +74,25 @@ class FileCompressionService(private val project: Project, private val coroutine
         }
     }
 
-    internal suspend fun compressFileInternal(currentFile:VirtualFile){
+    // Into extra function for easier testing
+    internal suspend fun compressFileInternal(currentFile: VirtualFile) {
         val file = withContext(Dispatchers.IO) {
             File(currentFile.path)
         }
-        val fileBytes =withContext(Dispatchers.IO) {
+        val fileBytes = withContext(Dispatchers.IO) {
             file.readBytes()
         }
         // Compression Level 3 as it is default
         val compBytes = Zstd.compress(fileBytes, 3)
         // Write compressed file to same location as input file
-        val compFile =  withContext(Dispatchers.IO) {
+        val compFile = withContext(Dispatchers.IO) {
             File(file.absolutePath + ".zst")
         }
         withContext(Dispatchers.IO) {
             compFile.writeBytes(compBytes)
         }
         // Dispatch onto EDT for UI refresh
-        withContext(Dispatchers.EDT){
+        withContext(Dispatchers.EDT) {
             // Refresh to make result visible faster
             LocalFileSystem.getInstance().refreshAndFindFileByPath(compFile.absolutePath)
         }
